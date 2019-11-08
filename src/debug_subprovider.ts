@@ -8,6 +8,12 @@ import { Transaction } from "ethereumjs-tx";
 
 const JSON_INDENT = 2;
 
+const hexBufferToAddress = (value: Buffer): string => {
+  console.log("buffer address", value);
+  return `0x${value.toString("hex")}`;
+};
+
+// TODO: change to BigNumber
 const hexBufferToInteger = (value: Buffer): number => {
   return parseInt(value.toString("hex"), 16);
 };
@@ -27,8 +33,9 @@ export class DebugSubprovider extends Subprovider {
     next: Callback,
     _end: ErrorCallback
   ): Promise<void> {
-    // TODO: change from console.logs to debug package
-    console.debug(JSON.stringify(payload, null, JSON_INDENT));
+    const debugObject: {
+      [debugValue: string]: any;
+    } = payload;
 
     if (
       payload &&
@@ -37,13 +44,17 @@ export class DebugSubprovider extends Subprovider {
     ) {
       const transactionParam = payload.params[0];
       const txn = new Transaction(transactionParam);
-      const txnDetails = {
+      debugObject.rawTransactionDetails = {
         gasLimit: hexBufferToInteger(txn.gasLimit),
         gasPrice: hexBufferToInteger(txn.gasPrice),
-        nonce: hexBufferToInteger(txn.nonce)
+        nonce: hexBufferToInteger(txn.nonce),
+        value: hexBufferToInteger(txn.value),
+        to: hexBufferToAddress(txn.to)
       };
-      console.debug(JSON.stringify(txnDetails, null, JSON_INDENT));
     }
+
+    // TODO: use custom function instead of console.debug
+    console.debug(JSON.stringify(debugObject, null, JSON_INDENT));
     next();
   }
 }
