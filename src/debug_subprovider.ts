@@ -1,7 +1,10 @@
-import { Subprovider } from "@0x/subproviders";
-// import EthereumTx = require("ethereumjs-tx");
+import {
+  Subprovider,
+  JSONRPCRequestPayload,
+  Callback,
+  ErrorCallback
+} from "@0x/subproviders";
 import { Transaction } from "ethereumjs-tx";
-import { Web3Wrapper } from "@0x/web3-wrapper";
 
 const JSON_INDENT = 2;
 
@@ -20,11 +23,11 @@ export class DebugSubprovider extends Subprovider {
    */
   // tslint:disable-next-line:prefer-function-over-method async-suffix
   public async handleRequest(
-    payload: any,
-    next: any,
-    _end: any
+    payload: JSONRPCRequestPayload,
+    next: Callback,
+    _end: ErrorCallback
   ): Promise<void> {
-    // TODO: change from console.logs to debugger package
+    // TODO: change from console.logs to debug package
     console.debug(JSON.stringify(payload, null, JSON_INDENT));
 
     if (
