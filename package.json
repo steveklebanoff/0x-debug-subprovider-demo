@@ -1,0 +1,16 @@
+{
+  "name": "debug-subprovider",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc -b",
+    "dev": "yarn build && node ./lib/src/index.js"
+  },
+  "dependencies": {
+    "0x.js": "6.0.12",
+    "@0x/subproviders": "^5.0.4",
+    "@0x/web3-wrapper": "^6.0.13",
+    "typescript": "^3.7.2"
+  }
+}
