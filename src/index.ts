@@ -6,6 +6,8 @@ import {
 import { ERC20TokenWrapper, BigNumber, ERC20ProxyWrapper } from "0x.js";
 import { Web3Wrapper } from "@0x/web3-wrapper";
 
+import { DebugSubprovider } from "./debug_subprovider";
+
 const TOKEN_ADDRESS = process.env.TOKEN_ADDRESS as string;
 const FROM_ETH_ADDRESS = process.env.FROM_ETH_ADDRESS as string;
 const TO_ETH_ADDRESSS = process.env.TO_ETH_ADDRESS as string;
@@ -18,10 +20,15 @@ const TOKEN_DECIMALS = 18;
 const go = async () => {
   const w3p = new Web3ProviderEngine();
   w3p.addProvider(new PrivateKeyWalletSubprovider(PRIVATE_KEY));
+  // NOTE: must be added _before_ RPC Subprovider, b/c RPC Subprovider calls end
+  w3p.addProvider(new DebugSubprovider());
   w3p.addProvider(new RPCSubprovider(ETH_NODE_URL));
   w3p.start();
 
   const w3w = new Web3Wrapper(w3p);
+
+  const blockNum = await w3w.getBlockNumberAsync();
+  console.log({ blockNum });
 
   const proxyWrapper = new ERC20ProxyWrapper(w3w, NETWORK_ID);
   const tokenWrapper = new ERC20TokenWrapper(w3w, NETWORK_ID, proxyWrapper);
